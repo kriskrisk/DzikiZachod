@@ -4,16 +4,27 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class StrategiaSzeryfa extends Strategia {
-    public Czynnosc leczenie(HashSet<Akcja> posiadaneAkcje, ArrayList<Gracz> aktualnyStanGry, int numerObecnegoGracza) {
-        if (posiadaneAkcje.contains(Akcja.ULECZ)) {
-            int obecna = aktualnyStanGry.get(numerObecnegoGracza).getObecnaIloscPunktowZycia();
-            int max =  aktualnyStanGry.get(numerObecnegoGracza).getMaxIloscPunktowZycia();
+    public Czynnosc leczenie(Gra gra) {
+        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        ArrayList<Gracz> aktualnyStanGry = gra.getGracze();
+        int numerObecnegoGracza = gra.getAktualnyGracz();
 
-            if (obecna < max) {
+        if (posiadaneAkcje.contains(Akcja.ULECZ)) {
+            if (gra.czyPotrzebujeLeczenia(numerObecnegoGracza)) {
                 return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(numerObecnegoGracza));
-            } else if ()
-        } else {
-            return null;
+            } else if (gra.czyPotrzebujeLeczenia(gra.nastepnyGracz()) && gra.czyPotrzebujeLeczenia(gra.poprzedniGracz())) {
+                if (gra.rzutMoneta()) {
+                    return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.nastepnyGracz()));
+                }
+
+                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.poprzedniGracz()));
+            } else if (gra.czyPotrzebujeLeczenia(gra.nastepnyGracz())) {
+                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.nastepnyGracz()));
+            } else if (gra.czyPotrzebujeLeczenia(gra.poprzedniGracz())) {
+                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.poprzedniGracz()));
+            }
         }
+
+        return null;
     }
 }

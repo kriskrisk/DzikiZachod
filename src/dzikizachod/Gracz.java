@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Gracz {
-    private HashSet<Akcja> posiadaneAkcje;//nie wem jeszcze jaka kolekcja
+    private HashSet<Akcja> posiadaneAkcje;
     private int maxIloscPunktowZycia;
     private int obecnaIloscPunktowZycia;
     private Strategia strategia;
@@ -16,6 +16,10 @@ public abstract class Gracz {
         this.obecnaIloscPunktowZycia = obecnaIloscPunktowZycia;
         this.strategia = strategia;
         this.zasięg = zasięg;
+    }
+
+    public HashSet<Akcja> getPosiadaneAkcje() {
+        return posiadaneAkcje;
     }
 
     public int getMaxIloscPunktowZycia() {

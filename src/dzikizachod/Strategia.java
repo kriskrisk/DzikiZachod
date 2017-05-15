@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Strategia {
-    public Czynnosc zwiekszanieZasiegu(HashSet<Akcja> posiadaneAkcje) {
+    public Czynnosc zwiekszanieZasiegu(Gra gra) {
+        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+
         if (posiadaneAkcje.contains(Akcja.ZASIEG_PLUS_DWA)) {
             return new Czynnosc(Akcja.ZASIEG_PLUS_DWA, null);
         } else if (posiadaneAkcje.contains(Akcja.ZASIEG_PLUS_JEDEN)) {
@@ -14,5 +16,5 @@ public abstract class Strategia {
         }
     }
 
-    public abstract Czynnosc leczenie(HashSet<Akcja> posiadaneAkcje, ArrayList<Gracz> aktualnyStanGry, int numerObecnegoGracza);
+    public abstract Czynnosc leczenie(Gra gra);
 }

@@ -1,23 +1,34 @@
 package dzikizachod;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class PulaAkcji {
     private LinkedList<Akcja> pula;
-    private LinkedList<Akcja> zużyte;
+    private LinkedList<Akcja> zuzyte;
 
     public PulaAkcji() {
         this.pula = new LinkedList<Akcja>();
     }
 
-    /*
-    Dodaje do talii karty podanego typu i w podanej ilości
-     */
-    public LinkedList<Akcja> dodaj(Akcja typ, int ilość) {
+    public void dodaj(Akcja typ, int ilosc) {
+        for (int i = 0; i < ilosc; i++) {
+            zuzyte.add(typ);
+        }
     }
 
     public void tasuj() {
-        //tasuje zużyte i wstawia je do puli
+        pula.clear();
+        int ilosc = zuzyte.size();
+        Random r = new Random();
+        int numerLosowejAkcji;
+
+        for (int i = 0; i < ilosc; i++) {
+            numerLosowejAkcji = r.nextInt(ilosc);
+            pula.add(zuzyte.get(numerLosowejAkcji));
+            zuzyte.remove(numerLosowejAkcji);
+            ilosc--;
+        }
     }
 }
 
