@@ -2,8 +2,8 @@ package dzikizachod;
 
 import java.util.HashSet;
 
-public class StrategiaPomocnikaSzeryfaDomyslna extends StrategiaPomocnikaSzeryfa {
-    public StrategiaPomocnikaSzeryfaDomyslna() {}
+public class StrategiaPomocnikaSzeryfaZliczajaca extends StrategiaPomocnikaSzeryfa {
+    public StrategiaPomocnikaSzeryfaZliczajaca() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
         HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
@@ -19,9 +19,7 @@ public class StrategiaPomocnikaSzeryfaDomyslna extends StrategiaPomocnikaSzeryfa
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
             HashSet<Gracz> kandydaci = wZasiegu(gra);
 
-            if (!kandydaci.isEmpty()) {
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
-            }
+            return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(podejrzani(kandydaci)));
         }
 
         return null;

@@ -32,4 +32,6 @@ public abstract class Strategia {
 
         return null;
     }
+
+    public abstract Czynnosc wybierzAkcje(Gra gra);
 }
