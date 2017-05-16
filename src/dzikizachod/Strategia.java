@@ -17,4 +17,20 @@ public abstract class Strategia {
     }
 
     public abstract Czynnosc leczenie(Gra gra);
+
+    public Czynnosc wybierzLeczenieLubZasieg(Gra gra) {
+        Czynnosc ruch = zwiekszanieZasiegu(gra);
+
+        if (ruch != null) {
+            return ruch;
+        }
+
+        ruch = leczenie(gra);
+
+        if (ruch != null) {
+            return ruch;
+        }
+
+        return null;
+    }
 }

@@ -2,9 +2,8 @@ package dzikizachod;
 
 import java.util.HashSet;
 
-public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
-
-    public StrategiaSzeryfaDomyslna() {}
+public class StrategiaBandytyDomyslna extends StrategiaBandyty{
+    public StrategiaBandytyDomyslna() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
         HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
@@ -23,5 +22,4 @@ public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
 
         return null;
     }
-
 }

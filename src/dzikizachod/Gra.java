@@ -1,5 +1,6 @@
 package dzikizachod;
 
+import javax.management.DynamicMBean;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,16 +8,24 @@ import java.util.Random;
 
 public class Gra {
     private ArrayList<Gracz> gracze;
-    private HashSet<TypZliczeniowy> StrzeliliDoSzeryfa;
-    private HashSet<TypZliczeniowy> ZabiliPomocnikaSzeryfa;
-    private HashSet<TypZliczeniowy> ZabiliBandyte;
+    //private HashSet<TypZliczeniowy> StrzeliliDoSzeryfa;
+    //private HashSet<TypZliczeniowy> ZabiliPomocnikaSzeryfa;
+    //private HashSet<TypZliczeniowy> ZabiliBandyte;
     private int aktualnyGracz;
 
     public Gra(ArrayList<Gracz> gracze) {
 
     }
 
-    public int nastepnyGraczPom(int aktualny) {
+    public int nastepnyGracz() {
+        if (aktualnyGracz == gracze.size() - 1) {
+            return 0;
+        }
+
+        return aktualnyGracz + 1;
+    }
+
+    public int nastepnyGracz(int aktualny) {
         if (aktualny == gracze.size() - 1) {
             return 0;
         }
@@ -24,32 +33,20 @@ public class Gra {
         return aktualny + 1;
     }
 
-    public int nastepnyGracz() {
-        int wynik = nastepnyGraczPom(aktualnyGracz);
-
-        while (gracze.get(wynik) == null) {
-            wynik = nastepnyGraczPom(wynik);
+    public int poprzedniGracz() {
+        if (aktualnyGracz == 0) {
+            return gracze.size() - 1;
         }
 
-        return wynik;
+        return aktualnyGracz - 1;
     }
 
-    public int poprzedniGraczPom(int aktualny) {
+    public int poprzedniGracz(int aktualny) {
         if (aktualny == 0) {
             return gracze.size() - 1;
         }
 
         return aktualny - 1;
-    }
-
-    public int poprzedniGracz() {
-        int wynik = poprzedniGraczPom(aktualnyGracz);
-
-        while (gracze.get(wynik) == null) {
-            wynik = poprzedniGraczPom(wynik);
-        }
-
-        return wynik;
     }
 
     public boolean rzutMoneta() {
@@ -59,17 +56,17 @@ public class Gra {
         return n == 1;
     }
 
-    public Gracz wybierzZeZbioru(HashSet<TypZliczeniowy> zbior) {
+    public Gracz wybierzZeZbioru(HashSet<Gracz> zbior) {
         Random r = new Random();
         int losowa = r.nextInt(zbior.size());
-        Iterator<TypZliczeniowy> iterator = zbior.iterator();
-        TypZliczeniowy wynik = iterator.next();
+        Iterator<Gracz> iterator = zbior.iterator();
+        Gracz wynik = iterator.next();
 
         for(int i = 0; i < losowa; i++) {
             wynik = iterator.next();
         }
 
-        return wynik.getGracz();
+        return wynik;
     }
 
     public Gracz wybierzNieSzeryfaZeZbioru(ArrayList<Gracz> zbior) {
@@ -85,20 +82,46 @@ public class Gra {
         return wynik;
     }
 
+    public HashSet<Gracz> strzeliliDoSzeryfa() {
+        HashSet<Gracz> strzelili = new HashSet<>();
+
+        for (int i = 0; i < gracze.size(); i++) {
+            Gracz rozpatrywany = gracze.get(i);
+
+            if (rozpatrywany.getCzyStrzelilDoSzeryfa()) {
+                strzelili.add(rozpatrywany);
+            }
+        }
+
+        return strzelili;
+    }
+
+    public int dystans(int strzelec, int cel) {
+        int dystansPrawo = 0;
+        int dystansLewo = 0;
+        int pozycja = aktualnyGracz;
+
+        while (pozycja != cel) {
+            pozycja = nastepnyGracz(pozycja);
+            dystansPrawo++;
+        }
+
+        pozycja = aktualnyGracz;
+
+        while (pozycja != cel) {
+            pozycja = poprzedniGracz(pozycja);
+            dystansLewo++;
+        }
+
+        if (dystansLewo < dystansPrawo) {
+            return dystansLewo;
+        }
+
+        return dystansPrawo;
+    }
+
     public boolean czyPotrzebujeLeczenia(int numerGracza) {
         return gracze.get(numerGracza).getObecnaIloscPunktowZycia() < gracze.get(numerGracza).getMaxIloscPunktowZycia();
-    }
-
-    public HashSet<TypZliczeniowy> getStrzeliliDoSzeryfa() {
-        return StrzeliliDoSzeryfa;
-    }
-
-    public HashSet<TypZliczeniowy> getZabiliPomocnikaSzeryfa() {
-        return ZabiliPomocnikaSzeryfa;
-    }
-
-    public HashSet<TypZliczeniowy> getZabiliBandyte() {
-        return ZabiliBandyte;
     }
 
     public int getAktualnyGracz() {

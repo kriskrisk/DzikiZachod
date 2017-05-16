@@ -2,6 +2,7 @@ package dzikizachod;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 public abstract class Gracz {
     private HashSet<Akcja> posiadaneAkcje;
@@ -9,13 +10,53 @@ public abstract class Gracz {
     private int obecnaIloscPunktowZycia;
     private Strategia strategia;
     private int zasięg;
+    private int numer;
+    private int liczbaZabitychPomocnikow;
+    private int liczbaZabitychBandytow;
+    private boolean czyStrzelilDoSzeryfa;
 
-    public Gracz(HashSet<Akcja> posiadaneAkcje, int maxIloscPunktowZycia, int obecnaIloscPunktowZycia, Strategia strategia, int zasięg) {
+    public Gracz(HashSet<Akcja> posiadaneAkcje, boolean czySzeryf, Strategia strategia, int zasięg) {
         this.posiadaneAkcje = posiadaneAkcje;
-        this.maxIloscPunktowZycia = maxIloscPunktowZycia;
-        this.obecnaIloscPunktowZycia = obecnaIloscPunktowZycia;
+
+        if (!czySzeryf) {
+            int IloscPunktowZycia = losujZycie();
+
+            this.maxIloscPunktowZycia = IloscPunktowZycia;
+            this.obecnaIloscPunktowZycia = IloscPunktowZycia;
+        } else {
+            this.maxIloscPunktowZycia = 5;
+            this.obecnaIloscPunktowZycia = 5;
+        }
+
         this.strategia = strategia;
         this.zasięg = zasięg;
+        this.numer = 0;
+        this.liczbaZabitychPomocnikow = 0;
+        this.liczbaZabitychBandytow = 0;
+        this.czyStrzelilDoSzeryfa = false;
+    }
+
+    private int losujZycie() {
+        Random r = new Random();
+        int losowa = r.nextInt(2);
+
+        return 3 + losowa;
+    }
+
+    public int getLiczbaZabitychPomocnikow() {
+        return liczbaZabitychPomocnikow;
+    }
+
+    public int getLiczbaZabitychBandytow() {
+        return liczbaZabitychBandytow;
+    }
+
+    public boolean getCzyStrzelilDoSzeryfa() {
+        return czyStrzelilDoSzeryfa;
+    }
+
+    public int getNumer() {
+        return numer;
     }
 
     public HashSet<Akcja> getPosiadaneAkcje() {
