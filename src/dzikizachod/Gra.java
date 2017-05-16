@@ -1,16 +1,12 @@
 package dzikizachod;
 
-import javax.management.DynamicMBean;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
 public class Gra {
-    private ArrayList<Gracz> gracze;
-    //private HashSet<TypZliczeniowy> StrzeliliDoSzeryfa;
-    //private HashSet<TypZliczeniowy> ZabiliPomocnikaSzeryfa;
-    //private HashSet<TypZliczeniowy> ZabiliBandyte;
+    private ArrayList<Gracz> gracze;//szeryf jest zawsze na zerowej pozycji;
     private int aktualnyGracz;
 
     public Gra(ArrayList<Gracz> gracze) {
@@ -96,9 +92,8 @@ public class Gra {
         return strzelili;
     }
 
-    public int dystans(int strzelec, int cel) {
+    public int dystansPrawo(int strzelec, int cel) {
         int dystansPrawo = 0;
-        int dystansLewo = 0;
         int pozycja = aktualnyGracz;
 
         while (pozycja != cel) {
@@ -106,18 +101,19 @@ public class Gra {
             dystansPrawo++;
         }
 
-        pozycja = aktualnyGracz;
+        return dystansPrawo;
+    }
+
+    public int dystansLewo(int strzelec, int cel) {
+        int dystansLewo = 0;
+        int pozycja = aktualnyGracz;
 
         while (pozycja != cel) {
             pozycja = poprzedniGracz(pozycja);
             dystansLewo++;
         }
 
-        if (dystansLewo < dystansPrawo) {
-            return dystansLewo;
-        }
-
-        return dystansPrawo;
+        return dystansLewo;
     }
 
     public boolean czyPotrzebujeLeczenia(int numerGracza) {

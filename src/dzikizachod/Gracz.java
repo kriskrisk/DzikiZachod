@@ -10,7 +10,6 @@ public abstract class Gracz {
     private int obecnaIloscPunktowZycia;
     private Strategia strategia;
     private int zasięg;
-    private int numer;
     private int liczbaZabitychPomocnikow;
     private int liczbaZabitychBandytow;
     private boolean czyStrzelilDoSzeryfa;
@@ -30,7 +29,6 @@ public abstract class Gracz {
 
         this.strategia = strategia;
         this.zasięg = zasięg;
-        this.numer = 0;
         this.liczbaZabitychPomocnikow = 0;
         this.liczbaZabitychBandytow = 0;
         this.czyStrzelilDoSzeryfa = false;
@@ -55,10 +53,6 @@ public abstract class Gracz {
         return czyStrzelilDoSzeryfa;
     }
 
-    public int getNumer() {
-        return numer;
-    }
-
     public HashSet<Akcja> getPosiadaneAkcje() {
         return posiadaneAkcje;
     }
@@ -75,12 +69,19 @@ public abstract class Gracz {
         this.obecnaIloscPunktowZycia = obecnaIloscPunktowZycia;
     }
 
-    public ArrayList<Akcja> dobierzAkcje(PulaAkcji pula) {
-        //dopełnia akcje do 5-ciu
+    public int getZasięg() {
+        return zasięg;
+    }
+
+    public void dobierzAkcje(PulaAkcji pula) {
+        while (posiadaneAkcje.size() < 5) {
+            posiadaneAkcje.add(pula.getPula().removeFirst());
+        }
     }
 
     public void strzel(Gracz cel) {
-        //strzela do innego gracza
+        int obecna = cel.getObecnaIloscPunktowZycia();
+        cel.setObecnaIloscPunktowZycia(obecna - 1);
     }
 
     //założenie: musi dać się uleczyć (obecna < max)

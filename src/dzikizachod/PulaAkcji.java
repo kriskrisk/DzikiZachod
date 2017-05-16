@@ -30,5 +30,9 @@ public class PulaAkcji {
             ilosc--;
         }
     }
+
+    public LinkedList<Akcja> getPula() {
+        return pula;
+    }
 }
 
