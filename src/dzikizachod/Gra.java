@@ -7,42 +7,55 @@ import java.util.Random;
 
 public class Gra {
     private ArrayList<Gracz> gracze;//szeryf jest zawsze na zerowej pozycji;
+    private PulaAkcji pula;
     private int aktualnyGracz;
+    private boolean czyJestDynamit;
 
-    public Gra(ArrayList<Gracz> gracze) {
-
+    public Gra() {
+        this.gracze = new ArrayList<>();
+        this.pula = new PulaAkcji();
+        this.aktualnyGracz = 0;
+        this.czyJestDynamit = false;
     }
 
-    public int nastepnyGracz() {
-        if (aktualnyGracz == gracze.size() - 1) {
-            return 0;
-        }
+    public void aktualnyGracz(int aktualnyGracz) {
+        this.aktualnyGracz = aktualnyGracz;
+    }
 
-        return aktualnyGracz + 1;
+    public void doNastepnegoGracza() {
+        if (aktualnyGracz == gracze.size() - 1) {
+            aktualnyGracz(0);
+        } else {
+            aktualnyGracz(aktualnyGracz + 1);
+        }
     }
 
     public int nastepnyGracz(int aktualny) {
-        if (aktualny == gracze.size() - 1) {
-            return 0;
-        }
+        int nastepny = aktualny;
 
-        return aktualny + 1;
-    }
+        do {
+            if (nastepny == gracze.size() - 1) {
+                nastepny = 0;
+            } else {
+                nastepny = nastepny + 1;
+            }
+        } while (!gracze.get(nastepny).czyZyje());
 
-    public int poprzedniGracz() {
-        if (aktualnyGracz == 0) {
-            return gracze.size() - 1;
-        }
-
-        return aktualnyGracz - 1;
+        return nastepny;
     }
 
     public int poprzedniGracz(int aktualny) {
-        if (aktualny == 0) {
-            return gracze.size() - 1;
-        }
+        int poprzedni = aktualny;
 
-        return aktualny - 1;
+        do {
+            if (poprzedni == 0) {
+                poprzedni = gracze.size() - 1;
+            } else {
+                poprzedni = poprzedni - 1;
+            }
+        } while (!gracze.get(poprzedni).czyZyje());
+
+        return poprzedni;
     }
 
     public boolean rzutMoneta() {
@@ -84,7 +97,7 @@ public class Gra {
         for (int i = 0; i < gracze.size(); i++) {
             Gracz rozpatrywany = gracze.get(i);
 
-            if (rozpatrywany.getCzyStrzelilDoSzeryfa()) {
+            if (rozpatrywany.czyStrzelilDoSzeryfa()) {
                 strzelili.add(rozpatrywany);
             }
         }
@@ -94,7 +107,7 @@ public class Gra {
 
     public int dystansPrawo(int strzelec, int cel) {
         int dystansPrawo = 0;
-        int pozycja = aktualnyGracz;
+        int pozycja = strzelec;
 
         while (pozycja != cel) {
             pozycja = nastepnyGracz(pozycja);
@@ -106,7 +119,7 @@ public class Gra {
 
     public int dystansLewo(int strzelec, int cel) {
         int dystansLewo = 0;
-        int pozycja = aktualnyGracz;
+        int pozycja = strzelec;
 
         while (pozycja != cel) {
             pozycja = poprzedniGracz(pozycja);
@@ -116,30 +129,42 @@ public class Gra {
         return dystansLewo;
     }
 
-    public boolean czyPotrzebujeLeczenia(int numerGracza) {
-        return gracze.get(numerGracza).getObecnaIloscPunktowZycia() < gracze.get(numerGracza).getMaxIloscPunktowZycia();
+    public boolean czyPotrzebujeLeczenia(int numerGracza)   {
+        return gracze.get(numerGracza).obecnaIloscPunktowZycia() < gracze.get(numerGracza).maxIloscPunktowZycia();
     }
 
-    public int getAktualnyGracz() {
+    public int aktualnyGracz() {
         return aktualnyGracz;
     }
 
-    public ArrayList<Gracz> getGracze() {
+    public ArrayList<Gracz> gracze() {
         return gracze;
     }
 
-    public int graczZaNTur(int n) {
-        int wynik = aktualnyGracz + n;
+    public boolean isCzyJestDynamit() {
+        return czyJestDynamit;
+    }
 
-        while (wynik >= gracze.size()) {
-            wynik = wynik - gracze.size();
-        }
+    public void czyJestDynamit(boolean czyJestDynamit) {
 
-        return wynik;
+        this.czyJestDynamit = czyJestDynamit;
     }
 
     public void rozgrywka(ArrayList<Gracz> gracze, PulaAkcji pula) {
-        //na początku losowanie kolejniści
+        this.pula = pula;
+        int i = 0;
 
+        //w "gracze" musi istnieć szeryf
+        while (!gracze.get(i).getClass().equals(Szeryf.class)) {
+            i++;
+        }
+
+        this.gracze.add(gracze.get(i));
+
+        //losowanie kolejności
+
+        //komunikat na początek gry
+
+        //
     }
 }

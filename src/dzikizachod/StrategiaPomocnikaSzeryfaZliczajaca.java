@@ -6,7 +6,7 @@ public class StrategiaPomocnikaSzeryfaZliczajaca extends StrategiaPomocnikaSzery
     public StrategiaPomocnikaSzeryfaZliczajaca() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (wybierzLeczenieLubZasieg(gra) != null) {
             return wybierzLeczenieLubZasieg(gra);

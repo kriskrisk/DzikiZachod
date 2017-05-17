@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public abstract class Strategia {
     public Czynnosc zwiekszanieZasiegu(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (posiadaneAkcje.contains(Akcja.ZASIEG_PLUS_DWA)) {
             return new Czynnosc(Akcja.ZASIEG_PLUS_DWA, null);

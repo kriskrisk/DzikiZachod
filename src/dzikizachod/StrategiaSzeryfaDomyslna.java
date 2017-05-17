@@ -7,7 +7,7 @@ public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
     public StrategiaSzeryfaDomyslna() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (wybierzLeczenieLubZasieg(gra) != null) {
             return wybierzLeczenieLubZasieg(gra);
@@ -17,7 +17,7 @@ public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
             if (!gra.strzeliliDoSzeryfa().isEmpty()) {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.strzeliliDoSzeryfa()));
             } else {
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzNieSzeryfaZeZbioru(gra.getGracze()));
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzNieSzeryfaZeZbioru(gra.gracze()));
             }
         }
 

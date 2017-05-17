@@ -7,7 +7,7 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
     public StrategiaBandytySprytna() {}
 
     private int ileStrzalowWTurze(Gra gra) {
-        Iterator<Akcja> iterator = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje().iterator();
+        Iterator<Akcja> iterator = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje().iterator();
         int wynik = 0;
 
         while (iterator.hasNext()) {
@@ -34,15 +34,15 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
             return strzelDoszeryfa(gra);
         }
 
-        if (gra.getGracze().get(gra.getAktualnyGracz()).getLiczbaZabitychBandytow() == 0) {
+        if (gra.gracze().get(gra.aktualnyGracz()).liczbaZabitychBandytow() == 0) {
             Gracz rozpatrywany;
             HashSet<Gracz> kandydaci = new HashSet<>();
             int iloscMozliwychStrzalow = ileStrzalowWTurze(gra);
 
-            for (int i = 1; i < gra.getGracze().size(); i++) {
-                rozpatrywany = gra.getGracze().get(i);
+            for (int i = 1; i < gra.gracze().size(); i++) {
+                rozpatrywany = gra.gracze().get(i);
 
-                if (rozpatrywany.getClass().equals(Bandyta.class) && rozpatrywany.getObecnaIloscPunktowZycia() <= iloscMozliwychStrzalow) {
+                if (rozpatrywany.getClass().equals(Bandyta.class) && rozpatrywany.obecnaIloscPunktowZycia() <= iloscMozliwychStrzalow) {
                     kandydaci.add(rozpatrywany);
                 }
             }
@@ -51,10 +51,10 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
             }
         } else {
-            int aktualny = gra.getAktualnyGracz();
+            int aktualny = gra.aktualnyGracz();
             int lewoDystans = gra.dystansLewo(aktualny, 0);
             int prawoDystans = gra.dystansPrawo(aktualny, 0);
-            int zasieg = gra.getGracze().get(aktualny).getZasięg();
+            int zasieg = gra.gracze().get(aktualny).zasięg();
 
             if (lewoDystans < prawoDystans) {
                 HashSet<Gracz> doWyboru = new HashSet<>();
@@ -62,8 +62,8 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
                 for (int i = 0; i < zasieg; i++) {
                     aktualny = gra.nastepnyGracz(aktualny);
 
-                    if (gra.getGracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
-                        doWyboru.add(gra.getGracze().get(aktualny));
+                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                        doWyboru.add(gra.gracze().get(aktualny));
                     }
                 }
 
@@ -74,8 +74,8 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
                 for (int i = 0; i < zasieg; i++) {
                     aktualny = gra.poprzedniGracz(aktualny);
 
-                    if (gra.getGracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
-                        doWyboru.add(gra.getGracze().get(aktualny));
+                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                        doWyboru.add(gra.gracze().get(aktualny));
                     }
                 }
 

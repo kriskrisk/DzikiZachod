@@ -13,7 +13,7 @@ public abstract class Gracz {
     private int liczbaZabitychPomocnikow;
     private int liczbaZabitychBandytow;
     private boolean czyStrzelilDoSzeryfa;
-
+    
     public Gracz(HashSet<Akcja> posiadaneAkcje, boolean czySzeryf, Strategia strategia, int zasięg) {
         this.posiadaneAkcje = posiadaneAkcje;
 
@@ -41,68 +41,90 @@ public abstract class Gracz {
         return 3 + losowa;
     }
 
-    public int getLiczbaZabitychPomocnikow() {
+    public int liczbaZabitychPomocnikow() {
         return liczbaZabitychPomocnikow;
     }
 
-    public int getLiczbaZabitychBandytow() {
+    public int liczbaZabitychBandytow() {
         return liczbaZabitychBandytow;
     }
 
-    public boolean getCzyStrzelilDoSzeryfa() {
+    public boolean czyStrzelilDoSzeryfa() {
         return czyStrzelilDoSzeryfa;
     }
 
-    public HashSet<Akcja> getPosiadaneAkcje() {
+    public HashSet<Akcja> posiadaneAkcje() {
         return posiadaneAkcje;
     }
 
-    public int getMaxIloscPunktowZycia() {
+    public int maxIloscPunktowZycia() {
         return maxIloscPunktowZycia;
     }
 
-    public int getObecnaIloscPunktowZycia() {
+    public int obecnaIloscPunktowZycia() {
         return obecnaIloscPunktowZycia;
     }
 
-    public void setObecnaIloscPunktowZycia(int obecnaIloscPunktowZycia) {
+    public void obecnaIloscPunktowZycia(int obecnaIloscPunktowZycia) {
         this.obecnaIloscPunktowZycia = obecnaIloscPunktowZycia;
     }
 
-    public int getZasięg() {
+    public int zasięg() {
         return zasięg;
     }
 
     public void dobierzAkcje(PulaAkcji pula) {
         while (posiadaneAkcje.size() < 5) {
-            posiadaneAkcje.add(pula.getPula().removeFirst());
+            posiadaneAkcje.add(pula.pula().removeFirst());
         }
     }
 
     public void strzel(Gracz cel) {
-        int obecna = cel.getObecnaIloscPunktowZycia();
-        cel.setObecnaIloscPunktowZycia(obecna - 1);
+        int obecna = cel.obecnaIloscPunktowZycia();
+        cel.obecnaIloscPunktowZycia(obecna - 1);
     }
 
     //założenie: musi dać się uleczyć (obecna < max)
     public void ulecz(Gracz ranny) {
-        int obecna = ranny.getObecnaIloscPunktowZycia();
-        ranny.setObecnaIloscPunktowZycia(obecna + 1);
+        int obecna = ranny.obecnaIloscPunktowZycia();
+        ranny.obecnaIloscPunktowZycia(obecna + 1);
     }
 
-    public void zwiększZasięg() {
+    public void zwiększZasięgOJeden() {
         this.zasięg++;
     }
 
-    public void rzucDynamit() {
-
+    public void zwiększZasięgODwa() {
+        zasięg = zasięg + 2;
     }
 
-    public Akcja wybierzAkcję() {
-        //wybiera akcję z ręki;
+    public abstract void komunikatOSmierci (int numer);
+
+    public Akcja wykonajRuch(Gra gra) {
+        Czynnosc ruch = strategia.wybierzAkcje(gra);
+        Akcja akcja = ruch.akcja();
+
+        if (akcja.equals(Akcja.ULECZ)) {
+            ulecz(ruch.osoba());
+        } else if (akcja.equals(Akcja.ZASIEG_PLUS_JEDEN)) {
+            zwiększZasięgOJeden();
+        } else if (akcja.equals(Akcja.ZASIEG_PLUS_DWA)) {
+            zwiększZasięgODwa();
+        } else if (akcja.equals(Akcja.DYNAMIT)) {
+            gra.czyJestDynamit(true);
+        } else if (akcja.equals(Akcja.STRZEL)) {
+            strzel(ruch.osoba());
+
+            //może to powinna robić gra
+            if (!ruch.osoba().czyZyje()) {
+                gra.gracze().remove(ruch.osoba());
+            }
+        }
+
+        return null;
     }
 
     public boolean czyZyje() {
-        //sprawdza czy życie != 0
+        return obecnaIloscPunktowZycia > 0;
     }
 }

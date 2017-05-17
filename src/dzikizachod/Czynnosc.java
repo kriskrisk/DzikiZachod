@@ -8,4 +8,12 @@ public class Czynnosc {
         this.akcja = akcja;
         this.osoba = osoba;
     }
+
+    public Akcja akcja() {
+        return akcja;
+    }
+
+    public Gracz osoba() {
+        return osoba;
+    }
 }

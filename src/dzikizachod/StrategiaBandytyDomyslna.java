@@ -6,7 +6,7 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
     public StrategiaBandytyDomyslna() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (wybierzLeczenieLubZasieg(gra) != null) {
             return wybierzLeczenieLubZasieg(gra);
@@ -21,10 +21,10 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
         }
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            int aktualny = gra.getAktualnyGracz();
+            int aktualny = gra.aktualnyGracz();
             int lewoDystans = gra.dystansLewo(aktualny, 0);
             int prawoDystans = gra.dystansPrawo(aktualny, 0);
-            int zasieg = gra.getGracze().get(aktualny).getZasięg();
+            int zasieg = gra.gracze().get(aktualny).zasięg();
 
             if (lewoDystans < prawoDystans) {
                 HashSet<Gracz> doWyboru = new HashSet<>();
@@ -32,8 +32,8 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
                 for (int i = 0; i < zasieg; i++) {
                     aktualny = gra.nastepnyGracz(aktualny);
 
-                    if (gra.getGracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
-                        doWyboru.add(gra.getGracze().get(aktualny));
+                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                        doWyboru.add(gra.gracze().get(aktualny));
                     }
                 }
 
@@ -44,8 +44,8 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
                 for (int i = 0; i < zasieg; i++) {
                     aktualny = gra.poprzedniGracz(aktualny);
 
-                    if (gra.getGracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
-                        doWyboru.add(gra.getGracze().get(aktualny));
+                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                        doWyboru.add(gra.gracze().get(aktualny));
                     }
                 }
 

@@ -31,7 +31,7 @@ public class PulaAkcji {
         }
     }
 
-    public LinkedList<Akcja> getPula() {
+    public LinkedList<Akcja> pula() {
         return pula;
     }
 }

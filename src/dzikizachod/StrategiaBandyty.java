@@ -6,18 +6,13 @@ import java.util.HashSet;
 public abstract class StrategiaBandyty extends Strategia {
 
     public Czynnosc leczenie(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
-        ArrayList<Gracz> aktualnyStanGry = gra.getGracze();
-        int numerObecnegoGracza = gra.getAktualnyGracz();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        ArrayList<Gracz> aktualnyStanGry = gra.gracze();
+        int numerObecnegoGracza = gra.aktualnyGracz();
 
         if (posiadaneAkcje.contains(Akcja.ULECZ)) {
             if (gra.czyPotrzebujeLeczenia(numerObecnegoGracza)) {
                 return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(numerObecnegoGracza));
-            } else if (gra.czyPotrzebujeLeczenia(gra.nastepnyGracz()) && gra.getGracze().get(gra.nastepnyGracz()).getClass().equals(Bandyta.class)) {
-                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.nastepnyGracz()));
-            }
-            else if (gra.czyPotrzebujeLeczenia(gra.poprzedniGracz()) && gra.getGracze().get(gra.poprzedniGracz()).getClass().equals(Bandyta.class)) {
-                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(gra.poprzedniGracz()));
             }
         }
 
@@ -25,7 +20,7 @@ public abstract class StrategiaBandyty extends Strategia {
     }
 
     public Czynnosc wybierzDynamit(Gra gra) {
-        if (gra.dystansPrawo(gra.getAktualnyGracz(), 0) < 3) {
+        if (gra.dystansPrawo(gra.aktualnyGracz(), 0) < 3) {
             return new Czynnosc(Akcja.DYNAMIT, null);
         }
 
@@ -33,16 +28,16 @@ public abstract class StrategiaBandyty extends Strategia {
     }
 
     public Czynnosc strzelDoszeryfa(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.getGracze().get(gra.getAktualnyGracz()).getPosiadaneAkcje();
+        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            int aktualny = gra.getAktualnyGracz();
+            int aktualny = gra.aktualnyGracz();
             int lewoDystans = gra.dystansLewo(aktualny, 0);
             int prawoDystans = gra.dystansPrawo(aktualny, 0);
-            int zasieg = gra.getGracze().get(aktualny).getZasięg();
+            int zasieg = gra.gracze().get(aktualny).zasięg();
 
             if (lewoDystans <= zasieg || prawoDystans <= zasieg) {
-                return new Czynnosc(Akcja.STRZEL, gra.getGracze().get(0));
+                return new Czynnosc(Akcja.STRZEL, gra.gracze().get(0));
             }
         }
 
