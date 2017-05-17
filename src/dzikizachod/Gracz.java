@@ -1,7 +1,7 @@
 package dzikizachod;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 public abstract class Gracz {
@@ -100,28 +100,51 @@ public abstract class Gracz {
 
     public abstract void komunikatOSmierci (int numer);
 
-    public Akcja wykonajRuch(Gra gra) {
+    public void wypiszReke() {
+        System.out.print("[");
+        Iterator<Akcja> reka = posiadaneAkcje.iterator();
+
+        for (int i = 0; i < 4; i++) {
+            System.out.print(reka.next().toString() + ", ");
+        }
+
+        System.out.println(reka.next().toString() + "]");
+    }
+
+    public abstract void komunikatOGraczuPoczatek(int numer);
+
+    public abstract void wypiszSwojStan(int numer);
+
+    public void wykonajRuch(Gra gra) {
         Czynnosc ruch = strategia.wybierzAkcje(gra);
         Akcja akcja = ruch.akcja();
 
-        if (akcja.equals(Akcja.ULECZ)) {
-            ulecz(ruch.osoba());
-        } else if (akcja.equals(Akcja.ZASIEG_PLUS_JEDEN)) {
-            zwiększZasięgOJeden();
-        } else if (akcja.equals(Akcja.ZASIEG_PLUS_DWA)) {
-            zwiększZasięgODwa();
-        } else if (akcja.equals(Akcja.DYNAMIT)) {
-            gra.czyJestDynamit(true);
-        } else if (akcja.equals(Akcja.STRZEL)) {
-            strzel(ruch.osoba());
+        if (ruch != null) {
+            if (akcja.equals(Akcja.ULECZ)) {
+                ulecz(ruch.osoba());
+                int indeksUleczonego = gra.gracze().indexOf(ruch.osoba());
 
-            //może to powinna robić gra
-            if (!ruch.osoba().czyZyje()) {
-                gra.gracze().remove(ruch.osoba());
+                if (indeksUleczonego == 0) {
+                    System.out.println("ULECZ " + indeksUleczonego);
+                } else {
+                    System.out.println("ULECZ");
+                }
+                System.out.println("ULECZ " + gra.gracze().indexOf(ruch.osoba()));
+            } else if (akcja.equals(Akcja.ZASIEG_PLUS_JEDEN)) {
+                zwiększZasięgOJeden();
+                System.out.println("ZASIEG_PLUS_JEDEN");
+            } else if (akcja.equals(Akcja.ZASIEG_PLUS_DWA)) {
+                zwiększZasięgODwa();
+                System.out.println("ZASIEG_PLUS_DWA");
+            } else if (akcja.equals(Akcja.DYNAMIT)) {
+                gra.czyJestDynamit(true);
+                System.out.println("DYNAMIT");
+            } else if (akcja.equals(Akcja.STRZEL)) {
+                strzel(ruch.osoba());
+                System.out.println("STRZEL " + gra.gracze().indexOf(ruch.osoba()));
+                gra.sprawdźCzyKoniec();
             }
         }
-
-        return null;
     }
 
     public boolean czyZyje() {
