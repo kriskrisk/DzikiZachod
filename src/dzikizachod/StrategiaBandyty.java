@@ -1,34 +1,19 @@
 package dzikizachod;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 
 public abstract class StrategiaBandyty extends Strategia {
-
-    public Czynnosc leczenie(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
-        ArrayList<Gracz> aktualnyStanGry = gra.gracze();
-        int numerObecnegoGracza = gra.aktualnyGracz();
-
-        if (posiadaneAkcje.contains(Akcja.ULECZ)) {
-            if (gra.czyPotrzebujeLeczenia(numerObecnegoGracza)) {
-                return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(numerObecnegoGracza));
-            }
-        }
-
-        return null;
-    }
-
     public Czynnosc wybierzDynamit(Gra gra) {
-        if (gra.dystansPrawo(gra.aktualnyGracz(), 0) < 3) {
+        LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        if (posiadaneAkcje.contains(Akcja.DYNAMIT) && gra.dystansPrawo(gra.aktualnyGracz(), 0) < 3) {
             return new Czynnosc(Akcja.DYNAMIT, null);
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 
     public Czynnosc strzelDoszeryfa(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
             int aktualny = gra.aktualnyGracz();
@@ -41,6 +26,6 @@ public abstract class StrategiaBandyty extends Strategia {
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 }

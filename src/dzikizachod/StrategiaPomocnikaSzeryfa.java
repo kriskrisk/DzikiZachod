@@ -1,31 +1,32 @@
 package dzikizachod;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public abstract class StrategiaPomocnikaSzeryfa extends Strategia {
+    @Override
     public Czynnosc leczenie(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.akcjeAktualnegoGracza();
         ArrayList<Gracz> aktualnyStanGry = gra.gracze();
         int numerObecnegoGracza = gra.aktualnyGracz();
 
         if (posiadaneAkcje.contains(Akcja.ULECZ)) {
-            if ((numerObecnegoGracza == 1 || numerObecnegoGracza == gra.gracze().size() - 1) && gra.czyPotrzebujeLeczenia(0)) {
+            if (gra.czyWZasiegu(numerObecnegoGracza, 0, 1) && gra.czyPotrzebujeLeczenia(0)) {
                 return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(0));
             } else if (gra.czyPotrzebujeLeczenia(numerObecnegoGracza)) {
                 return new Czynnosc(Akcja.ULECZ, aktualnyStanGry.get(numerObecnegoGracza));
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 
     public Czynnosc wybierzDynamit(Gra gra) {
-        if (gra.dystansPrawo(gra.aktualnyGracz(), 0) > 3) {
+        LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        if (posiadaneAkcje.contains(Akcja.DYNAMIT) && gra.dystansPrawo(gra.aktualnyGracz(), 0) > 3) {
+
             int i = gra.aktualnyGracz();
-            HashSet<Gracz> doRozpatrzenia = new HashSet<>();
-            HashSet<Gracz> podejrzani;
+            LinkedList<Gracz> doRozpatrzenia = new LinkedList<>();
+            LinkedList<Gracz> podejrzani;
 
             while (i != 0) {
                 i = gra.nastepnyGracz(i);
@@ -41,12 +42,12 @@ public abstract class StrategiaPomocnikaSzeryfa extends Strategia {
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 
-    public HashSet<Gracz> podejrzani(HashSet<Gracz> doRozpatrzenia) {
-        Iterator<Gracz> iterator = doRozpatrzenia.iterator();
-        HashSet<Gracz> wynik = new HashSet<>();
+    public LinkedList<Gracz> podejrzani(LinkedList<Gracz> doRozpatrzenia) {
+        ListIterator<Gracz> iterator = doRozpatrzenia.listIterator();
+        LinkedList<Gracz> wynik = new LinkedList<>();
 
         while (iterator.hasNext()) {
             Gracz rozpatrywany = iterator.next();
@@ -57,21 +58,5 @@ public abstract class StrategiaPomocnikaSzeryfa extends Strategia {
         }
 
         return wynik;
-    }
-
-    public HashSet<Gracz> wZasiegu(Gra gra) {
-        int aktualny = gra.aktualnyGracz();
-        int zasieg = gra.gracze().get(aktualny).zasięg();
-        HashSet<Gracz> kandydaci = new HashSet<>();
-        int rozpatrywanyGracz = aktualny;
-
-        for (int i = 0; i < zasieg; i++) {
-            rozpatrywanyGracz = gra.nastepnyGracz(rozpatrywanyGracz);
-            if (rozpatrywanyGracz != 0) {
-                kandydaci.add(gra.gracze().get(rozpatrywanyGracz));
-            }
-        }
-
-        return kandydaci;
     }
 }

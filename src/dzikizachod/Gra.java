@@ -1,9 +1,6 @@
 package dzikizachod;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 public class Gra {
     private ArrayList<Gracz> gracze;//szeryf jest zawsze na zerowej pozycji;
@@ -17,19 +14,11 @@ public class Gra {
         this.pula = new PulaAkcji();
         this.aktualnyGracz = 0;
         this.czyJestDynamit = false;
-        this.stanGry = WygranaStrona.GRA_W_TRAKCI;
+        this.stanGry = WygranaStrona.GRA_W_TRAKCIE;
     }
 
-    public void aktualnyGracz(int aktualnyGracz) {
-        this.aktualnyGracz = aktualnyGracz;
-    }
-
-    public void doNastepnegoGracza() {
-        if (aktualnyGracz == gracze.size() - 1) {
-            aktualnyGracz(0);
-        } else {
-            aktualnyGracz(aktualnyGracz + 1);
-        }
+    public LinkedList<Akcja> akcjeAktualnegoGracza() {
+        return gracze().get(aktualnyGracz).posiadaneAkcje();
     }
 
     public int nastepnyGracz(int aktualny) {
@@ -60,27 +49,34 @@ public class Gra {
         return poprzedni;
     }
 
-    public boolean rzutMoneta() {
+    public int rzutKoscia() {
         Random r = new Random();
-        int n = r.nextInt(2);
+        int n = r.nextInt(6);
 
-        return n == 1;
+        return n + 1;
     }
 
-    public Gracz wybierzZeZbioru(HashSet<Gracz> zbior) {
+    public Gracz wybierzZeZbioru(LinkedList<Gracz> zbior) {
         Random r = new Random();
         int losowa = r.nextInt(zbior.size());
-        Iterator<Gracz> iterator = zbior.iterator();
-        Gracz wynik = iterator.next();
 
-        for(int i = 0; i < losowa; i++) {
-            wynik = iterator.next();
-        }
-
-        return wynik;
+        return zbior.get(losowa);
     }
 
-    public Gracz wybierzNieSzeryfaZeZbioru(ArrayList<Gracz> zbior) {
+    public LinkedList<Gracz> zywiGracze (){
+        LinkedList<Gracz> zywi = new LinkedList<>();
+        for (int i = 0; i < gracze.size(); i++) {
+            Gracz rozpatrywany = gracze.get(i);
+
+            if (rozpatrywany.czyZyje()) {
+                zywi.add(rozpatrywany);
+            }
+        }
+
+        return zywi;
+    }
+
+    public Gracz wybierzNieSzeryfaZeZbioru(LinkedList<Gracz> zbior) {
         Random r = new Random();
         int losowa = r.nextInt(zbior.size());
         Gracz wynik = zbior.get(losowa);
@@ -93,18 +89,32 @@ public class Gra {
         return wynik;
     }
 
-    public HashSet<Gracz> strzeliliDoSzeryfa() {
-        HashSet<Gracz> strzelili = new HashSet<>();
+    public LinkedList<Gracz> strzeliliDoSzeryfa() {
+        LinkedList<Gracz> strzelili = new LinkedList<>();
 
         for (int i = 0; i < gracze.size(); i++) {
             Gracz rozpatrywany = gracze.get(i);
 
-            if (rozpatrywany.czyStrzelilDoSzeryfa()) {
+            if (rozpatrywany.czyZyje() && rozpatrywany.czyStrzelilDoSzeryfa()) {
                 strzelili.add(rozpatrywany);
             }
         }
 
         return strzelili;
+    }
+
+    public LinkedList<Gracz> wZasiegu(LinkedList<Gracz> kandydaci) {
+        ListIterator<Gracz> iterator = kandydaci.listIterator();
+        LinkedList<Gracz> wynik = new LinkedList<>();
+
+        while (iterator.hasNext()) {
+            Gracz rozpatrywany = iterator.next();
+            if (czyWZasiegu(aktualnyGracz, gracze().indexOf(rozpatrywany))) {
+                wynik.add(rozpatrywany);
+            }
+        }
+
+        return wynik;
     }
 
     public int dystansPrawo(int strzelec, int cel) {
@@ -131,6 +141,20 @@ public class Gra {
         return dystansLewo;
     }
 
+    public boolean czyWZasiegu(int strzelec, int cel) {
+        int zasieg = gracze().get(strzelec).zasięg();
+
+        return czyWZasiegu(strzelec, cel, zasieg);
+    }
+
+    public boolean czyWZasiegu(int strzelec, int cel, int zasieg) {
+        if (strzelec == cel) {
+            return false;
+        }
+
+        return zasieg >= dystansPrawo(strzelec, cel) || zasieg >= dystansLewo(strzelec, cel);
+    }
+
     public boolean czyPotrzebujeLeczenia(int numerGracza)   {
         return gracze.get(numerGracza).obecnaIloscPunktowZycia() < gracze.get(numerGracza).maxIloscPunktowZycia()
                 && gracze().get(numerGracza).czyZyje();
@@ -144,17 +168,13 @@ public class Gra {
         return gracze;
     }
 
-    public boolean isCzyJestDynamit() {
-        return czyJestDynamit;
-    }
+    public void puscDynamit() {
 
-    public void czyJestDynamit(boolean czyJestDynamit) {
-
-        this.czyJestDynamit = czyJestDynamit;
+        this.czyJestDynamit = true;
     }
 
     public void wypiszGraczy() {
-        System.out.println("Gracze:");
+        System.out.println("  Gracze:");
 
         for (int i = 0; i < gracze().size(); i++) {
             gracze().get(i).wypiszSwojStan(i);
@@ -165,18 +185,35 @@ public class Gra {
 
     public void sprawdźCzyKoniec() {
         boolean czyZyjeJakisBandyta = false;
-        int i = 0;
+        int i = 1;
 
         while (!czyZyjeJakisBandyta && i < gracze().size()) {
             if (gracze().get(i).getClass().equals(Bandyta.class)) {
                 czyZyjeJakisBandyta = true;
             }
+
+            i++;
         }
 
         if (!gracze().get(0).czyZyje()) {
             stanGry = WygranaStrona.BANDYCI;
         } else if (!czyZyjeJakisBandyta) {
             stanGry = WygranaStrona.SZERYF_I_POMOCNICY;
+        }
+    }
+
+    public PulaAkcji pula() {
+        return pula;
+    }
+
+    public void obsluzDynamit() {
+        if (czyJestDynamit && rzutKoscia() == 1) {
+            if(gracze.get(aktualnyGracz).obecnaIloscPunktowZycia() > 3) {
+                int przedDynamitem = gracze.get(aktualnyGracz).obecnaIloscPunktowZycia();
+                gracze.get(aktualnyGracz).obecnaIloscPunktowZycia(przedDynamitem - 3);
+            } else {
+                gracze.get(aktualnyGracz).obecnaIloscPunktowZycia(0);
+            }
         }
     }
 
@@ -189,33 +226,52 @@ public class Gra {
             i++;
         }
 
-        this.gracze.add(nowiGracze.get(i));
+        this.gracze.add(nowiGracze.remove(i));
 
-        //losowanie kolejności
+        Random r = new Random();
+        int ilu = nowiGracze.size();
+
+        for (int l = 0; l < ilu; l++) {
+            int losowa = r.nextInt(nowiGracze.size());
+            this.gracze().add(nowiGracze.remove(losowa));
+        }
+
+        this.pula.tasuj();
+
+        for (int l = 0; l < gracze().size(); l++) {
+            gracze().get(l).dobierzAkcje(this.pula);
+        }
 
         System.out.println("**START");
         wypiszGraczy();
 
         int numerTury = 1;
-        while (this.stanGry.equals(WygranaStrona.GRA_W_TRAKCI) && numerTury <= 42) {
+        while (this.stanGry.equals(WygranaStrona.GRA_W_TRAKCIE) && numerTury <= 42) {
             System.out.println("** TURA " + numerTury);
 
             for (aktualnyGracz = 0; aktualnyGracz < gracze.size(); aktualnyGracz++) {
-                if (stanGry.equals(WygranaStrona.GRA_W_TRAKCI)) {
+                if (stanGry.equals(WygranaStrona.GRA_W_TRAKCIE)) {
                     if (gracze.get(aktualnyGracz).czyZyje()) {
+                        gracze.get(aktualnyGracz).komunikatOGraczuPoczatek(aktualnyGracz);
 
-                        gracze.get(aktualnyGracz()).komunikatOGraczuPoczatek(aktualnyGracz);
+                        obsluzDynamit();
+
                         for (int j = 0; j < 5; j++) {
                             gracze.get(aktualnyGracz()).wykonajRuch(this);
+
+                            if (!stanGry.equals(WygranaStrona.GRA_W_TRAKCIE)) {
+                                break;
+                            }
                         }
+
+                        gracze.get(aktualnyGracz()).dobierzAkcje(pula);
+                        wypiszGraczy();
                     } else {
                         gracze.get(aktualnyGracz()).komunikatOSmierci(aktualnyGracz);
                     }
                 }
             }
 
-            System.out.println();
-            this.wypiszGraczy();
             numerTury++;
         }
 

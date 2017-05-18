@@ -1,27 +1,30 @@
 package dzikizachod;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 
 public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
 
     public StrategiaSzeryfaDomyslna() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.akcjeAktualnegoGracza();
 
-        if (wybierzLeczenieLubZasieg(gra) != null) {
+        if (!wybierzLeczenieLubZasieg(gra).akcja().equals(Akcja.BRAK)) {
             return wybierzLeczenieLubZasieg(gra);
         }
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            if (!gra.strzeliliDoSzeryfa().isEmpty()) {
+            LinkedList<Gracz> cele = gra.wZasiegu(gra.strzeliliDoSzeryfa());
+
+            if (!cele.isEmpty()) {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.strzeliliDoSzeryfa()));
             } else {
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzNieSzeryfaZeZbioru(gra.gracze()));
+                cele = gra.wZasiegu(new LinkedList<>(gra.zywiGracze()));
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzNieSzeryfaZeZbioru(cele));
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 
 }

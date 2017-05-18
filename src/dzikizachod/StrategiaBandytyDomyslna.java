@@ -1,22 +1,22 @@
 package dzikizachod;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 
 public class StrategiaBandytyDomyslna extends StrategiaBandyty{
     public StrategiaBandytyDomyslna() {}
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.akcjeAktualnegoGracza();
 
-        if (wybierzLeczenieLubZasieg(gra) != null) {
+        if (!wybierzLeczenieLubZasieg(gra).akcja().equals(Akcja.BRAK)) {
             return wybierzLeczenieLubZasieg(gra);
         }
 
-        if (wybierzDynamit(gra) != null) {
+        if (!wybierzDynamit(gra).akcja().equals(Akcja.BRAK)) {
             return wybierzDynamit(gra);
         }
 
-        if (strzelDoszeryfa(gra) != null) {
+        if (!strzelDoszeryfa(gra).akcja().equals(Akcja.BRAK)) {
             return strzelDoszeryfa(gra);
         }
 
@@ -27,32 +27,43 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
             int zasieg = gra.gracze().get(aktualny).zasięg();
 
             if (lewoDystans < prawoDystans) {
-                HashSet<Gracz> doWyboru = new HashSet<>();
+                LinkedList<Gracz> doWyboru = new LinkedList<>();
+                int aktualnieRozpatrywany = gra.nastepnyGracz(aktualny);
 
-                for (int i = 0; i < zasieg; i++) {
-                    aktualny = gra.nastepnyGracz(aktualny);
-
-                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                while (aktualnieRozpatrywany != 0) {
+                    if (gra.gracze().get(aktualnieRozpatrywany).getClass().equals(PomocnikSzeryfa.class)) {
                         doWyboru.add(gra.gracze().get(aktualny));
                     }
+
+                    aktualnieRozpatrywany = gra.nastepnyGracz(aktualnieRozpatrywany);
                 }
 
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(doWyboru));
+                LinkedList<Gracz> kandydaci = gra.wZasiegu(doWyboru);
+
+                if (kandydaci.size() != 0) {
+                    return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
+                }
             } else if (prawoDystans <= lewoDystans) {
-                HashSet<Gracz> doWyboru = new HashSet<>();
+                LinkedList<Gracz> doWyboru = new LinkedList<>();
+                int aktualnieRozpatrywany = gra.poprzedniGracz(aktualny);
 
-                for (int i = 0; i < zasieg; i++) {
-                    aktualny = gra.poprzedniGracz(aktualny);
-
-                    if (gra.gracze().get(aktualny).getClass().equals(PomocnikSzeryfa.class)) {
+                while (aktualnieRozpatrywany != 0) {
+                    if (gra.gracze().get(aktualnieRozpatrywany).getClass().equals(PomocnikSzeryfa.class)) {
                         doWyboru.add(gra.gracze().get(aktualny));
                     }
+
+                    aktualnieRozpatrywany = gra.poprzedniGracz(aktualnieRozpatrywany);
+
                 }
 
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(doWyboru));
+                LinkedList<Gracz> kandydaci = gra.wZasiegu(doWyboru);
+
+                if (kandydaci.size() != 0) {
+                    return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
+                }
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 }

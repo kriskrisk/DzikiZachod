@@ -2,44 +2,44 @@ package dzikizachod;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 public class StrategiaSzeryfaZliczajaca extends StrategiaSzeryfa {
 
     public StrategiaSzeryfaZliczajaca() {}
 
-    public Gracz wybierzCel(Gra gra) {
+    public LinkedList<Gracz> wybierzCel(Gra gra) {
         ArrayList<Gracz> gracze = gra.gracze();
-        HashSet<Gracz> kandydaci = new HashSet<>();
+        LinkedList<Gracz> kandydaci = new LinkedList<>();
 
         for (int i = 0; i < gracze.size(); i++) {
             Gracz rozpatrywany = gracze.get(i);
+
             if (rozpatrywany.liczbaZabitychPomocnikow() > rozpatrywany.liczbaZabitychBandytow()) {
                 kandydaci.add(rozpatrywany);
             }
         }
 
-        if (kandydaci.isEmpty()) {
-            return null;
-        }
-
-        return gra.wybierzZeZbioru(kandydaci);
+        return gra.wZasiegu(kandydaci);
     }
 
     public Czynnosc wybierzAkcje(Gra gra) {
-        HashSet<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.akcjeAktualnegoGracza();
 
-        if (wybierzLeczenieLubZasieg(gra) != null) {
+        if (!wybierzLeczenieLubZasieg(gra).akcja().equals(Akcja.BRAK)) {
             return wybierzLeczenieLubZasieg(gra);
         }
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            if (!gra.strzeliliDoSzeryfa().isEmpty()) {
+            LinkedList<Gracz> cele = gra.wZasiegu(gra.strzeliliDoSzeryfa());
+
+            if (!cele.isEmpty()) {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.strzeliliDoSzeryfa()));
-            } else {
-                return new Czynnosc(Akcja.STRZEL, wybierzCel(gra));
+            } else if (wybierzCel(gra).size() != 0) {
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(wybierzCel(gra)));
             }
         }
 
-        return null;
+        return new Czynnosc(Akcja.BRAK, null);
     }
 }

@@ -8,7 +8,8 @@ public class PulaAkcji {
     private LinkedList<Akcja> zuzyte;
 
     public PulaAkcji() {
-        this.pula = new LinkedList<Akcja>();
+        this.pula = new LinkedList<>();
+        this.zuzyte = new LinkedList<>();
     }
 
     public void dodaj(Akcja typ, int ilosc) {
@@ -24,10 +25,8 @@ public class PulaAkcji {
         int numerLosowejAkcji;
 
         for (int i = 0; i < ilosc; i++) {
-            numerLosowejAkcji = r.nextInt(ilosc);
-            pula.add(zuzyte.get(numerLosowejAkcji));
-            zuzyte.remove(numerLosowejAkcji);
-            ilosc--;
+            numerLosowejAkcji = r.nextInt(zuzyte.size());
+            pula.add(zuzyte.remove(numerLosowejAkcji));
         }
     }
 
