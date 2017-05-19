@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public abstract class StrategiaBandyty extends Strategia {
     //Decyduje czy wybrać dynamit jako akcję do wykonania.
     public Czynnosc wybierzDynamit(Gra gra) {
-        LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
+        LinkedList<Akcja> posiadaneAkcje = gra.akcjeAktualnegoGracza();
         if (posiadaneAkcje.contains(Akcja.DYNAMIT) && gra.dystansPrawo(gra.aktualnyGracz(), 0) < 3) {
             return new Czynnosc(Akcja.DYNAMIT, null);
         }

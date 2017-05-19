@@ -13,10 +13,6 @@ public class StrategiaPomocnikaSzeryfaDomyslna extends StrategiaPomocnikaSzeryfa
             return wybierzLeczenieLubZasieg(gra);
         }
 
-        if (!wybierzDynamit(gra).akcja().equals(Akcja.BRAK)) {
-            return wybierzDynamit(gra);
-        }
-
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
             LinkedList<Gracz> zbior = new LinkedList<>(gra.zywiGracze());
             ListIterator<Gracz> iterator = zbior.listIterator();
@@ -38,6 +34,6 @@ public class StrategiaPomocnikaSzeryfaDomyslna extends StrategiaPomocnikaSzeryfa
             }
         }
 
-        return new Czynnosc(Akcja.BRAK, null);
+        return wybierzDynamit(gra);
     }
 }

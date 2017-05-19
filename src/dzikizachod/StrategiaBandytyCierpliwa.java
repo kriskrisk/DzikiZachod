@@ -9,9 +9,9 @@ public class StrategiaBandytyCierpliwa extends StrategiaBandyty{
         }
 
         if (!wybierzDynamit(gra).akcja().equals(Akcja.BRAK)) {
-            return wybierzDynamit(gra);
+            return strzelDoszeryfa(gra);
         }
 
-        return strzelDoszeryfa(gra);
+        return wybierzDynamit(gra);
     }
 }

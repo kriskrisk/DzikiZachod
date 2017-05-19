@@ -33,13 +33,13 @@ public abstract class Strategia {
     //Jeśli to możliwe wybiera zwiększanie zasięgu lub leczenie
     //jako akcję do wykonania.
     public Czynnosc wybierzLeczenieLubZasieg(Gra gra) {
-        Czynnosc ruch = zwiekszanieZasiegu(gra);
+        Czynnosc ruch = leczenie(gra);
 
         if (!ruch.akcja().equals(Akcja.BRAK)) {
             return ruch;
         }
 
-        ruch = leczenie(gra);
+        ruch = zwiekszanieZasiegu(gra);
 
         if (!ruch.akcja().equals(Akcja.BRAK)) {
             return ruch;

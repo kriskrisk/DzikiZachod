@@ -12,10 +12,6 @@ public class StrategiaPomocnikaSzeryfaZliczajaca extends StrategiaPomocnikaSzery
             return wybierzLeczenieLubZasieg(gra);
         }
 
-        if (!wybierzDynamit(gra).akcja().equals(Akcja.BRAK)) {
-            return wybierzDynamit(gra);
-        }
-
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
             LinkedList<Gracz> kandydaci = gra.wZasiegu(gra.strzeliliDoSzeryfa());
 
@@ -30,6 +26,6 @@ public class StrategiaPomocnikaSzeryfaZliczajaca extends StrategiaPomocnikaSzery
             }
         }
 
-        return new Czynnosc(Akcja.BRAK, null);
+        return wybierzDynamit(gra);
     }
 }

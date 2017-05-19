@@ -12,10 +12,6 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
             return wybierzLeczenieLubZasieg(gra);
         }
 
-        if (!wybierzDynamit(gra).akcja().equals(Akcja.BRAK)) {
-            return wybierzDynamit(gra);
-        }
-
         if (!strzelDoszeryfa(gra).akcja().equals(Akcja.BRAK)) {
             return strzelDoszeryfa(gra);
         }
@@ -64,6 +60,6 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
             }
         }
 
-        return new Czynnosc(Akcja.BRAK, null);
+        return wybierzDynamit(gra);
     }
 }
