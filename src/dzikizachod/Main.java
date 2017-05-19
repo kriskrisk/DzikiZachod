@@ -7,11 +7,11 @@ public class Main {
         ArrayList<Gracz> gracze = new ArrayList<>();
         gracze.add(new Szeryf());
 
-        for(int i=0;i<2;i++) {
+        for(int i = 0; i < 3; i++) {
             gracze.add(new PomocnikSzeryfa());
         }
 
-        for(int i=0;i<3;i++) {
+        for(int i = 0; i < 4; i++) {
             gracze.add(new Bandyta());
         }
 

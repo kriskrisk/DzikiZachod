@@ -20,7 +20,7 @@ public class StrategiaSzeryfaDomyslna extends StrategiaSzeryfa {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.strzeliliDoSzeryfa()));
             } else {
                 cele = gra.wZasiegu(new LinkedList<>(gra.zywiGracze()));
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzNieSzeryfaZeZbioru(cele));
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(cele));
             }
         }
 

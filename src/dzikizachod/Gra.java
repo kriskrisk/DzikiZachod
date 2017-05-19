@@ -21,6 +21,20 @@ public class Gra {
         return gracze().get(aktualnyGracz).posiadaneAkcje();
     }
 
+    public int aktualnyGracz() {
+        return aktualnyGracz;
+    }
+
+    public ArrayList<Gracz> gracze() {
+        return gracze;
+    }
+
+    public PulaAkcji pula() {
+        return pula;
+    }
+
+    //Zwraca numer gracza który następny będzie wykonywał ruch.
+    //Zwrócony gracz jest żywy.
     public int nastepnyGracz(int aktualny) {
         int nastepny = aktualny;
 
@@ -35,6 +49,8 @@ public class Gra {
         return nastepny;
     }
 
+    //Zwraca numer gracza który wykonywał ruch jako poprzedni.
+    //Zwrócony gracz jest żywy.
     public int poprzedniGracz(int aktualny) {
         int poprzedni = aktualny;
 
@@ -56,6 +72,7 @@ public class Gra {
         return n + 1;
     }
 
+    //Wybiera losowy element z podanego zbioru.
     public Gracz wybierzZeZbioru(LinkedList<Gracz> zbior) {
         Random r = new Random();
         int losowa = r.nextInt(zbior.size());
@@ -63,6 +80,7 @@ public class Gra {
         return zbior.get(losowa);
     }
 
+    //Zwraca listę żywych graczy
     public LinkedList<Gracz> zywiGracze (){
         LinkedList<Gracz> zywi = new LinkedList<>();
         for (int i = 0; i < gracze.size(); i++) {
@@ -76,19 +94,7 @@ public class Gra {
         return zywi;
     }
 
-    public Gracz wybierzNieSzeryfaZeZbioru(LinkedList<Gracz> zbior) {
-        Random r = new Random();
-        int losowa = r.nextInt(zbior.size());
-        Gracz wynik = zbior.get(losowa);
-
-        while (wynik.getClass() == Szeryf.class) {
-            losowa = r.nextInt(zbior.size());
-            wynik = zbior.get(losowa);
-        }
-
-        return wynik;
-    }
-
+    //Zwraca listę graczy którzy choć raz strzelili do szeryfa.
     public LinkedList<Gracz> strzeliliDoSzeryfa() {
         LinkedList<Gracz> strzelili = new LinkedList<>();
 
@@ -103,6 +109,7 @@ public class Gra {
         return strzelili;
     }
 
+    //Zwraca listę graczy do których aktualny gracz może strzelić.
     public LinkedList<Gracz> wZasiegu(LinkedList<Gracz> kandydaci) {
         ListIterator<Gracz> iterator = kandydaci.listIterator();
         LinkedList<Gracz> wynik = new LinkedList<>();
@@ -117,6 +124,7 @@ public class Gra {
         return wynik;
     }
 
+    //Zwraca dystans pomiędzy graczami zgodnie z przebiegiem gry.
     public int dystansPrawo(int strzelec, int cel) {
         int dystansPrawo = 0;
         int pozycja = strzelec;
@@ -129,6 +137,7 @@ public class Gra {
         return dystansPrawo;
     }
 
+    //Zwraca dystans pomiędzy graczami przeciwnie do przebiegu gry.
     public int dystansLewo(int strzelec, int cel) {
         int dystansLewo = 0;
         int pozycja = strzelec;
@@ -160,14 +169,6 @@ public class Gra {
                 && gracze().get(numerGracza).czyZyje();
     }
 
-    public int aktualnyGracz() {
-        return aktualnyGracz;
-    }
-
-    public ArrayList<Gracz> gracze() {
-        return gracze;
-    }
-
     public void puscDynamit() {
 
         this.czyJestDynamit = true;
@@ -187,8 +188,8 @@ public class Gra {
         boolean czyZyjeJakisBandyta = false;
         int i = 1;
 
-        while (!czyZyjeJakisBandyta && i < gracze().size()) {
-            if (gracze().get(i).getClass().equals(Bandyta.class)) {
+        while (!czyZyjeJakisBandyta && i < zywiGracze().size()) {
+            if (zywiGracze().get(i).getClass().equals(Bandyta.class)) {
                 czyZyjeJakisBandyta = true;
             }
 
@@ -202,10 +203,8 @@ public class Gra {
         }
     }
 
-    public PulaAkcji pula() {
-        return pula;
-    }
-
+    //Sprawdza czy dynamit wybuchł (jeśli ktoś go podłożył).
+    //Ewentualnie zadaje obrażenia aktualnemu graczowi.
     public void obsluzDynamit() {
         if (czyJestDynamit && rzutKoscia() == 1) {
             if(gracze.get(aktualnyGracz).obecnaIloscPunktowZycia() > 3) {
@@ -217,11 +216,11 @@ public class Gra {
         }
     }
 
+    //Przeprowadza rozgrywkę.
     public void rozgrywka(ArrayList<Gracz> nowiGracze, PulaAkcji pula) {
         this.pula = pula;
         int i = 0;
 
-        //w "nowiGracze" musi istnieć szeryf
         while (!nowiGracze.get(i).getClass().equals(Szeryf.class)) {
             i++;
         }

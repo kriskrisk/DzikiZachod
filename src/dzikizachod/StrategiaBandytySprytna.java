@@ -1,13 +1,12 @@
 package dzikizachod;
 
-
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class StrategiaBandytySprytna extends StrategiaBandyty {
     public StrategiaBandytySprytna() {}
 
+    //Zwraca liczbę akcji "STRZAŁ" dostępnych dla gracza w aktualnej turze
     private int ileStrzalowWTurze(Gra gra) {
         ListIterator<Akcja> iterator = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje().listIterator();
         int wynik = 0;
@@ -40,8 +39,8 @@ public class StrategiaBandytySprytna extends StrategiaBandyty {
             LinkedList<Gracz> kandydaci = new LinkedList<>();
             int iloscMozliwychStrzalow = ileStrzalowWTurze(gra);
 
-            for (int i = 1; i < gra.gracze().size(); i++) {
-                Gracz rozpatrywany = gra.gracze().get(i);
+            for (int i = 1; i < gra.zywiGracze().size(); i++) {
+                Gracz rozpatrywany = gra.zywiGracze().get(i);
 
                 if (rozpatrywany.getClass().equals(Bandyta.class) &&
                         rozpatrywany.obecnaIloscPunktowZycia() <= iloscMozliwychStrzalow) {

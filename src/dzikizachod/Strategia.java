@@ -30,6 +30,8 @@ public abstract class Strategia {
         return new Czynnosc(Akcja.BRAK, null);
     }
 
+    //Jeśli to możliwe wybiera zwiększanie zasięgu lub leczenie
+    //jako akcję do wykonania.
     public Czynnosc wybierzLeczenieLubZasieg(Gra gra) {
         Czynnosc ruch = zwiekszanieZasiegu(gra);
 

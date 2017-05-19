@@ -1,7 +1,7 @@
 package dzikizachod;
 
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Random;
 
 public abstract class Gracz {
@@ -32,13 +32,6 @@ public abstract class Gracz {
         this.liczbaZabitychPomocnikow = 0;
         this.liczbaZabitychBandytow = 0;
         this.czyStrzelilDoSzeryfa = false;
-    }
-
-    private int losujZycie() {
-        Random r = new Random();
-        int losowa = r.nextInt(2);
-
-        return 3 + losowa;
     }
 
     public int liczbaZabitychPomocnikow() {
@@ -73,6 +66,16 @@ public abstract class Gracz {
         return zasięg;
     }
 
+    //Losuje czy gracz ma mieć 3 czy 4 punkty życia.
+    private int losujZycie() {
+        Random r = new Random();
+        int losowa = r.nextInt(2);
+
+        return 3 + losowa;
+    }
+
+    //Uzupełnia akcje gracza do 5.
+    //Jeśli w puli skończą się akcje tasuje pulę.
     public void dobierzAkcje(PulaAkcji pula) {
         while (this.posiadaneAkcje.size() < 5) {
             if (pula.pula().size() == 0) {
@@ -103,9 +106,10 @@ public abstract class Gracz {
 
     public abstract void komunikatOSmierci (int numer);
 
+    //Wypisuje akcje gracza.
     public void wypiszReke() {
         System.out.print("[");
-        Iterator<Akcja> reka = posiadaneAkcje.iterator();
+        ListIterator<Akcja> reka = posiadaneAkcje.listIterator();
         int ileByło = 0;
 
         while (reka.hasNext()) {
@@ -125,6 +129,7 @@ public abstract class Gracz {
 
     public abstract void wypiszSwojStan(int numer);
 
+    //Wybiera jedną akcję i wykonuje wybraną czynność.
     public void wykonajRuch(Gra gra) {
         Czynnosc ruch = strategia.wybierzAkcje(gra);
         Akcja akcja = ruch.akcja();
@@ -132,13 +137,19 @@ public abstract class Gracz {
 
         if (!akcja.equals(Akcja.BRAK)) {
             gra.pula().dodaj(akcja, 1);
+
+            //odłożenie akcji do puli
+            if (!akcja.equals(Akcja.DYNAMIT)) {
+                gra.pula().dodaj(akcja, 1);
+            }
+
             this.posiadaneAkcje.remove(akcja);
 
             if (akcja.equals(Akcja.ULECZ)) {
                 ulecz(osoba);
                 int indeksUleczonego = gra.gracze().indexOf(osoba);
 
-                if (indeksUleczonego == 0) {
+                if (indeksUleczonego == 0 && gra.aktualnyGracz() != 0) {
                     System.out.println("      ULECZ " + (indeksUleczonego + 1));
                 } else {
                     System.out.println("      ULECZ");
@@ -152,6 +163,7 @@ public abstract class Gracz {
             } else if (akcja.equals(Akcja.DYNAMIT)) {
                 gra.puscDynamit();
                 System.out.println("      DYNAMIT");
+                gra.sprawdźCzyKoniec();
             } else if (akcja.equals(Akcja.STRZEL)) {
                 strzel(ruch.osoba());
                 System.out.println("      STRZEL " + (gra.gracze().indexOf(osoba) + 1));
@@ -160,6 +172,7 @@ public abstract class Gracz {
                     this.czyStrzelilDoSzeryfa = true;
                 }
 
+                //zliczanie zabić
                 if (!osoba.czyZyje()) {
                     if (osoba.getClass().equals(Bandyta.class)) {
                         this.liczbaZabitychBandytow++;

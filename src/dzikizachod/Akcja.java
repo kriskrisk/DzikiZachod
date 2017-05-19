@@ -4,7 +4,6 @@ public enum Akcja {
     ULECZ,  STRZEL, ZASIEG_PLUS_JEDEN,
     ZASIEG_PLUS_DWA, DYNAMIT, BRAK;
 
-
     @Override
     public String toString() {
         switch(this) {

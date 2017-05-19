@@ -24,9 +24,9 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
             int aktualny = gra.aktualnyGracz();
             int lewoDystans = gra.dystansLewo(aktualny, 0);
             int prawoDystans = gra.dystansPrawo(aktualny, 0);
-            int zasieg = gra.gracze().get(aktualny).zasięg();
 
-            if (lewoDystans < prawoDystans) {
+            //próba skrucenia krótszego z dystansów do szeryfa
+            if (prawoDystans < lewoDystans) {
                 LinkedList<Gracz> doWyboru = new LinkedList<>();
                 int aktualnieRozpatrywany = gra.nastepnyGracz(aktualny);
 
@@ -43,7 +43,7 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
                 if (kandydaci.size() != 0) {
                     return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
                 }
-            } else if (prawoDystans <= lewoDystans) {
+            } else if (lewoDystans <= prawoDystans) {
                 LinkedList<Gracz> doWyboru = new LinkedList<>();
                 int aktualnieRozpatrywany = gra.poprzedniGracz(aktualny);
 
@@ -58,7 +58,7 @@ public class StrategiaBandytyDomyslna extends StrategiaBandyty{
 
                 LinkedList<Gracz> kandydaci = gra.wZasiegu(doWyboru);
 
-                if (kandydaci.size() != 0) {
+                if (!kandydaci.isEmpty()) {
                     return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
                 }
             }

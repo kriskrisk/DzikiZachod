@@ -17,9 +17,17 @@ public class StrategiaPomocnikaSzeryfaZliczajaca extends StrategiaPomocnikaSzery
         }
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            LinkedList<Gracz> kandydaci = gra.wZasiegu(podejrzani(gra.zywiGracze()));
+            LinkedList<Gracz> kandydaci = gra.wZasiegu(gra.strzeliliDoSzeryfa());
 
-            return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.wZasiegu(podejrzani(kandydaci))));
+            if (!kandydaci.isEmpty()) {
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
+            }
+
+            kandydaci = gra.wZasiegu(podejrzani(gra.zywiGracze()));
+
+            if (!kandydaci.isEmpty()) {
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(kandydaci));
+            }
         }
 
         return new Czynnosc(Akcja.BRAK, null);

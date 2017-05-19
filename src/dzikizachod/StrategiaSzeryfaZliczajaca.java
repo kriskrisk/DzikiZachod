@@ -1,13 +1,13 @@
 package dzikizachod;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class StrategiaSzeryfaZliczajaca extends StrategiaSzeryfa {
 
     public StrategiaSzeryfaZliczajaca() {}
 
+    //Zwraca listę graczy którzy są w zasięgu i zabili więcej pomocników szeryfa niż bandytów.
     public LinkedList<Gracz> wybierzCel(Gra gra) {
         ArrayList<Gracz> gracze = gra.gracze();
         LinkedList<Gracz> kandydaci = new LinkedList<>();
@@ -34,7 +34,7 @@ public class StrategiaSzeryfaZliczajaca extends StrategiaSzeryfa {
             LinkedList<Gracz> cele = gra.wZasiegu(gra.strzeliliDoSzeryfa());
 
             if (!cele.isEmpty()) {
-                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(gra.strzeliliDoSzeryfa()));
+                return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(cele));
             } else if (wybierzCel(gra).size() != 0) {
                 return new Czynnosc(Akcja.STRZEL, gra.wybierzZeZbioru(wybierzCel(gra)));
             }

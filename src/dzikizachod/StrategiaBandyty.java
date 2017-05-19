@@ -3,6 +3,7 @@ package dzikizachod;
 import java.util.LinkedList;
 
 public abstract class StrategiaBandyty extends Strategia {
+    //Decyduje czy wybrać dynamit jako akcję do wykonania.
     public Czynnosc wybierzDynamit(Gra gra) {
         LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
         if (posiadaneAkcje.contains(Akcja.DYNAMIT) && gra.dystansPrawo(gra.aktualnyGracz(), 0) < 3) {

@@ -1,6 +1,5 @@
 package dzikizachod;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class Bandyta extends Gracz {

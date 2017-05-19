@@ -20,6 +20,7 @@ public abstract class StrategiaPomocnikaSzeryfa extends Strategia {
         return new Czynnosc(Akcja.BRAK, null);
     }
 
+    //Decyduje czy wybrać dynamit jako akcję do wykonania.
     public Czynnosc wybierzDynamit(Gra gra) {
         LinkedList<Akcja> posiadaneAkcje = gra.gracze().get(gra.aktualnyGracz()).posiadaneAkcje();
         if (posiadaneAkcje.contains(Akcja.DYNAMIT) && gra.dystansPrawo(gra.aktualnyGracz(), 0) > 3) {
@@ -45,6 +46,7 @@ public abstract class StrategiaPomocnikaSzeryfa extends Strategia {
         return new Czynnosc(Akcja.BRAK, null);
     }
 
+    //Zwraca listę graczy którzy zabili więcej pomocników szeryfa niż bandytów.
     public LinkedList<Gracz> podejrzani(LinkedList<Gracz> doRozpatrzenia) {
         ListIterator<Gracz> iterator = doRozpatrzenia.listIterator();
         LinkedList<Gracz> wynik = new LinkedList<>();

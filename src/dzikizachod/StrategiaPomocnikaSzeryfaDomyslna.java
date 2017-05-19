@@ -18,7 +18,7 @@ public class StrategiaPomocnikaSzeryfaDomyslna extends StrategiaPomocnikaSzeryfa
         }
 
         if (posiadaneAkcje.contains(Akcja.STRZEL)) {
-            LinkedList<Gracz> zbior = new LinkedList<>(gra.gracze());
+            LinkedList<Gracz> zbior = new LinkedList<>(gra.zywiGracze());
             ListIterator<Gracz> iterator = zbior.listIterator();
 
             while (iterator.hasNext()) {
